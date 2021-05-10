@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { MouseEventHandler, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import InputAddress from "../inputAddress/InputAddress";
 
@@ -7,31 +7,10 @@ const testMark = [55.75, 37.57];
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
-  const [addressCoords, setAddressCoords] = useState()
+  const [addressCoords, setAddressCoords] = useState();
 
-  const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
-
-  const getCoordsFromName = (adress: string): void => {
-    const { street, house } = getStreetAndHouse(adress);
-    const city: string = "Ижевск";
-
-    const url: string = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&format=json&geocode=${city}+${street}+${house}`;
-
-    axios.get(url).then((resp) => {
-      const coordinates: string =
-        resp.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point
-          .pos;
-
-      const correctCoordinates = coordinates.split(",");
-
-      correctCoordinates.forEach((el) => parseInt(el));
-
-      // TODO: save this value
-      console.log(correctCoordinates);
-    });
-  };
-
-  const getNameFromCoords = (event: YMapsProps) => {
+  const setClickPosition = (event: YMapsProps) => {
+    const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
     const coordinates = event.get("coords");
 
     setAddressCoords(coordinates);
@@ -58,7 +37,7 @@ const TaxiMap: React.FC = () => {
       });
 
       if (street === "" || house === "") {
-        setAddress("")
+        setAddress("");
         // TODO: вызвать функцию, которая оставит метку красного цвета с надписью "Адрес не найден"
       } else {
         const targetName: string = `${street}, ${house}`;
@@ -69,33 +48,27 @@ const TaxiMap: React.FC = () => {
     });
   };
 
-  const getStreetAndHouse = (adress: string): {street: string, house: string | undefined} => {
-    const addressWithoutComma: string = adress.replace(",", "");
-
-    const addressItems: string[] = addressWithoutComma.split(" ");
-    const house = addressItems.pop();
-    const street = addressItems.join(" ");
-
-    return { street, house };
-  };
-
-  const availableAddressMark = <Placemark
-  geometry={addressCoords}
-  options={{ preset: "islands#yellowDotIcon" }}
-/>
-  const unavailableAddressMark = <Placemark
-  geometry={addressCoords}
-  options={{ preset: 'islands#redStretchyIcon' }}
-  properties={{
-    iconContent: "Адрес не найден"
-}}
-/>
+  const availableAddressMark = (
+    <Placemark
+      geometry={addressCoords}
+      options={{ preset: "islands#yellowDotIcon" }}
+    />
+  );
+  const unavailableAddressMark = (
+    <Placemark
+      geometry={addressCoords}
+      options={{ preset: "islands#redStretchyIcon" }}
+      properties={{
+        iconContent: "Адрес не найден",
+      }}
+    />
+  );
 
   return (
     <>
       <InputAddress address={address} setAddress={setAddress} />
       <YMaps>
-        <Map state={{ center: testMark, zoom: 19 }} onClick={getNameFromCoords}>
+        <Map state={{ center: testMark, zoom: 19 }} onClick={setClickPosition}>
           {/* <Placemark
             geometry={testMark}
             options={{ preset: "islands#darkGreenAutoIcon" }}
