@@ -7,6 +7,7 @@ const testMark = [55.75, 37.57];
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
+  const [addressCoords, setAddressCoords] = useState()
 
   const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
 
@@ -32,6 +33,8 @@ const TaxiMap: React.FC = () => {
 
   const getNameFromCoords = (event: YMapsProps) => {
     const coordinates = event.get("coords");
+
+    setAddressCoords(coordinates);
 
     const reverseCoordinates: number[] = coordinates.reverse();
     const location: string = reverseCoordinates.join();
@@ -76,15 +79,28 @@ const TaxiMap: React.FC = () => {
     return { street, house };
   };
 
+  const availableAddressMark = <Placemark
+  geometry={addressCoords}
+  options={{ preset: "islands#yellowDotIcon" }}
+/>
+  const unavailableAddressMark = <Placemark
+  geometry={addressCoords}
+  options={{ preset: 'islands#redStretchyIcon' }}
+  properties={{
+    iconContent: "Адрес не найден"
+}}
+/>
+
   return (
     <>
       <InputAddress address={address} setAddress={setAddress} />
       <YMaps>
         <Map state={{ center: testMark, zoom: 19 }} onClick={getNameFromCoords}>
-          <Placemark
+          {/* <Placemark
             geometry={testMark}
             options={{ preset: "islands#darkGreenAutoIcon" }}
-          />
+          /> */}
+          {address === "" ? unavailableAddressMark : availableAddressMark}
         </Map>
       </YMaps>
     </>

@@ -3,10 +3,7 @@ type InputAddressProps = {
     setAddress: any
 }
 
-
 const InputAddress:React.FC<InputAddressProps> = ({address, setAddress}) => {
-// TODO: использовать стейт родителя
-
     const setX = (event: any) => {
         const value = event.target.value; 
         setAddress(value)
