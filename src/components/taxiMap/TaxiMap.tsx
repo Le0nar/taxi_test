@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { MouseEventHandler, useEffect, useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
+import InputAddress from "../inputAddress/InputAddress";
 
 const testMark = [55.75, 37.57];
 
@@ -54,6 +55,7 @@ const TaxiMap: React.FC = () => {
       });
 
       if (street === "" || house === "") {
+        setAddress("")
         // TODO: вызвать функцию, которая оставит метку красного цвета с надписью "Адрес не найден"
       } else {
         const targetName: string = `${street}, ${house}`;
@@ -76,6 +78,7 @@ const TaxiMap: React.FC = () => {
 
   return (
     <>
+      <InputAddress address={address} setAddress={setAddress} />
       <YMaps>
         <Map state={{ center: testMark, zoom: 19 }} onClick={getNameFromCoords}>
           <Placemark
