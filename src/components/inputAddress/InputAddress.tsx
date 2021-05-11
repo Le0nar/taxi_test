@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { setInterval } from "timers";
 import useDebounce from "../../hooks/debounce.hook";
 
 type InputAddressProps = {
@@ -11,7 +10,6 @@ type InputAddressProps = {
 
 const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAddressCoords}) => {
   const [inputValue, setInputValue] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
 
   const debouncedSearchTerm = useDebounce(inputValue, 1000);
 
@@ -21,7 +19,6 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      setIsSearching(true);
 
       const testResult = checkInputValue(inputValue);
       let ckheckedValue: string = "";
@@ -31,9 +28,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
         return
       } 
       ckheckedValue = testResult[0];
-
       setAddressCoordsFromName(ckheckedValue)
-      setIsSearching(false);
 
     } else {
       console.log("else")
@@ -41,8 +36,6 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
   }, [debouncedSearchTerm]);
 
   const checkInputValue = (inputValue: string) => {
-    setIsSearching(false);
-
     const regexp = /(\S+\s){1,3}\S+/;
     const verifedValue = inputValue.match(regexp);
     return verifedValue;
@@ -66,7 +59,11 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
       const lat = +correctCoordinates[1];
       const lon = +correctCoordinates[0];
 
-       setAddressCoords([lat, lon])
+      if ((lat === 56.852676) && (lon === 53.206891)) {
+        showInvalidInput()
+      } else {
+        setAddressCoords([lat, lon])
+      }
     });
   };
 
