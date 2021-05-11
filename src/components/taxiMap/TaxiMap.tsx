@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import InputAddress from "../inputAddress/InputAddress";
 
-const testMark = [55.75, 37.57];
+const testMark = [56.86186,  53.23243];
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
-  const [addressCoords, setAddressCoords] = useState();
+  const [addressCoords, setAddressCoords] = useState([3,3]);
 
   const setClickPosition = (event: YMapsProps) => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
@@ -66,9 +66,9 @@ const TaxiMap: React.FC = () => {
 
   return (
     <>
-      <InputAddress address={address} setAddress={setAddress} />
+      <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} />
       <YMaps>
-        <Map state={{ center: testMark, zoom: 19 }} onClick={setClickPosition}>
+        <Map state={{ center: testMark, zoom: 18 }} onClick={setClickPosition}>
           {/* <Placemark
             geometry={testMark}
             options={{ preset: "islands#darkGreenAutoIcon" }}

@@ -1,63 +1,98 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { setInterval } from "timers";
+import useDebounce from "../../hooks/debounce.hook";
 
 type InputAddressProps = {
-    address: string,
-    setAddress: any
-}
+  address: string;
+  setAddress: any;
+  setAddressCoords: any;
+};
 
-const InputAddress:React.FC<InputAddressProps> = ({address, setAddress}) => {
+const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAddressCoords}) => {
+  const [inputValue, setInputValue] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
-    const setAddressCoordsFromName = (adress: string): void => {
-        const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
-        const { street, house } = getStreetAndHouse(adress);
-        const city: string = "Ижевск";
-    
-        const url: string = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&format=json&geocode=${city}+${street}+${house}`;
-    
-        axios.get(url).then((resp) => {
-          const coordinates: string =
-            resp.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point
-              .pos;
-    
-          const correctCoordinates = coordinates.split(",");
-    
-          correctCoordinates.forEach((el) => parseInt(el));
-    
-          console.log(correctCoordinates);
-        });
-      };
+  const debouncedSearchTerm = useDebounce(inputValue, 1000);
 
-      const getStreetAndHouse = (adress: string): {street: string, house: string | undefined} => {
-        const addressWithoutComma: string = adress.replace(",", "");
-    
-        const addressItems: string[] = addressWithoutComma.split(" ");
-        const house = addressItems.pop();
-        const street = addressItems.join(" ");
-    
-        return { street, house };
-      };
+  const showInvalidInput = () => {
+    console.log("не валидно")
+  }
 
-    const handleChange = (event: any) => {
-        const value = event.target.value; 
-        setAddress(value)
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsSearching(true);
 
+      const testResult = checkInputValue(inputValue);
+      let ckheckedValue: string = "";
 
-        const regexp = /(\S+\s){1,3}\S+/
-        const verifedValue = value.match(regexp)
+      if (testResult === null) {
+        showInvalidInput()
+        return
+      } 
+      ckheckedValue = testResult[0];
 
-        if (verifedValue) {
-            // TODO: вызвать функцию, которая ставит метку на координаты из геокодирования
-            console.log(verifedValue[0])
-        }
+      setAddressCoordsFromName(ckheckedValue)
+      setIsSearching(false);
+
+    } else {
+      console.log("else")
     }
+  }, [debouncedSearchTerm]);
 
-    return (
-        <div className="input-adress">
-            {/* TODO: при клике на лейбл, сделать активным инпут */}
-            <label>Откуда</label>
-            <input type="text"  onChange={handleChange} value={address} />
-        </div>
-    )
-}
+  const checkInputValue = (inputValue: string) => {
+    setIsSearching(false);
 
-export default InputAddress
+    const regexp = /(\S+\s){1,3}\S+/;
+    const verifedValue = inputValue.match(regexp);
+    return verifedValue;
+  };
+
+
+  const setAddressCoordsFromName = (adress: string): void => {
+    const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
+    const { street, house } = getStreetAndHouse(adress);
+    const city: string = "Ижевск";
+
+    const url: string = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&format=json&geocode=${city}+${street}+${house}`;
+
+    axios.get(url).then((resp) => {
+      const coordinates: string =
+        resp.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point
+          .pos;
+
+      const correctCoordinates = coordinates.split(" ");
+
+      const lat = +correctCoordinates[1];
+      const lon = +correctCoordinates[0];
+
+       setAddressCoords([lat, lon])
+    });
+  };
+
+  const getStreetAndHouse = (
+    adress: string
+  ): { street: string; house: string | undefined } => {
+    const addressWithoutComma: string = adress.replace(",", "");
+
+    const addressItems: string[] = addressWithoutComma.split(" ");
+    const house = addressItems.pop();
+    const street = addressItems.join(" ");
+
+    return { street, house };
+  };
+
+  return (
+    <div className="input-adress">
+      {/* TODO: при клике на лейбл, сделать активным инпут */}
+      <label>Откуда</label>
+      <input
+        type="text"
+        onChange={(e) => setInputValue(e.target.value)}
+        value={inputValue}
+      />
+    </div>
+  );
+};
+
+export default InputAddress;
