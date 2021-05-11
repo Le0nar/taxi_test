@@ -5,13 +5,12 @@ import useDebounce from "../../hooks/debounce.hook";
 type InputAddressProps = {
   address: string;
   setAddress: any;
+  addressCoords: any;
   setAddressCoords: any;
 };
 
-const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAddressCoords}) => {
-  const [inputValue, setInputValue] = useState("");
-
-  const debouncedSearchTerm = useDebounce(inputValue, 1000);
+const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords}) => {
+  const debouncedSearchTerm = useDebounce(address, 1000);
 
   const showInvalidInput = () => {
     console.log("не валидно")
@@ -20,7 +19,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
   useEffect(() => {
     if (debouncedSearchTerm) {
 
-      const testResult = checkInputValue(inputValue);
+      const testResult = checkInputValue(address);
       let ckheckedValue: string = "";
 
       if (testResult === null) {
@@ -28,16 +27,16 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
         return
       } 
       ckheckedValue = testResult[0];
+      setAddressCoords([0,0])
       setAddressCoordsFromName(ckheckedValue)
-
     } else {
       console.log("else")
     }
   }, [debouncedSearchTerm]);
 
-  const checkInputValue = (inputValue: string) => {
+  const checkInputValue = (address: string) => {
     const regexp = /(\S+\s){1,3}\S+/;
-    const verifedValue = inputValue.match(regexp);
+    const verifedValue = address.match(regexp);
     return verifedValue;
   };
 
@@ -50,6 +49,9 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
     const url: string = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&format=json&geocode=${city}+${street}+${house}`;
 
     axios.get(url).then((resp) => {
+      if (!resp.data.response.GeoObjectCollection.featureMember[0]) {
+        return
+      }
       const coordinates: string =
         resp.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point
           .pos;
@@ -62,7 +64,8 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
       if ((lat === 56.852676) && (lon === 53.206891)) {
         showInvalidInput()
       } else {
-        setAddressCoords([lat, lon])
+        setAddress(address);
+        setAddressCoords([lat, lon]);
       }
     });
   };
@@ -79,14 +82,15 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, setAdd
     return { street, house };
   };
 
+
   return (
     <div className="input-adress">
       {/* TODO: при клике на лейбл, сделать активным инпут */}
       <label>Откуда</label>
       <input
         type="text"
-        onChange={(e) => setInputValue(e.target.value)}
-        value={inputValue}
+        onChange={(e) => setAddress(e.target.value)}
+        value={address}
       />
     </div>
   );

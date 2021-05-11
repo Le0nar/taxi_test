@@ -7,7 +7,7 @@ const testMark = [56.86186,  53.23243];
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
-  const [addressCoords, setAddressCoords] = useState([3,3]);
+  const [addressCoords, setAddressCoords] = useState([0, 0]);
 
   const setClickPosition = (event: YMapsProps) => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
@@ -66,7 +66,7 @@ const TaxiMap: React.FC = () => {
 
   return (
     <>
-      <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} />
+      <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} addressCoords={addressCoords} />
       <YMaps>
         <Map state={{ center: testMark, zoom: 18 }} onClick={setClickPosition}>
           {/* <Placemark
