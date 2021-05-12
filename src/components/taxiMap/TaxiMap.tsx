@@ -4,29 +4,29 @@ import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
 import InputAddress from "../inputAddress/InputAddress";
 
-
-
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
   const [addressCoords, setAddressCoords] = useState([0, 0]);
-  const [mapCoords, setMapCoords] = useState([56.86186,  53.23243]);
+  const [mapCoords, setMapCoords] = useState([
+    56.84755415049656, 53.20983911284374,
+  ]);
   const [crews, setCrews] = useState<[] | null>(null);
 
   useEffect(() => {
     if (address !== "") {
-      getCrews()
+      getCrews();
     } else {
-      setCrews(null)
+      setCrews(null);
     }
-  }, [address])
+  }, [address]);
 
   const getCrews = async () => {
     // TODO: оформить согласно тз (время и другие данные передать в аргументы)
     const url = "http://localhost:8000/crews";
-    const result = await axios.get(url)
+    const result = await axios.get(url);
     const crewsList = result.data[0].data.crews_info;
-    setCrews(crewsList)
-}
+    setCrews(crewsList);
+  };
 
   const setClickPosition = (event: YMapsProps) => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
@@ -83,13 +83,23 @@ const TaxiMap: React.FC = () => {
 
   return (
     <>
-      <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} addressCoords={addressCoords} setMapCoords={setMapCoords} />
+      <InputAddress
+        address={address}
+        setAddress={setAddress}
+        setAddressCoords={setAddressCoords}
+        addressCoords={addressCoords}
+        setMapCoords={setMapCoords}
+      />
       <YMaps>
-        <Map state={{ center: mapCoords, zoom: 18 }} onClick={setClickPosition}>
-          {/* <Placemark
-            geometry={testMark}
-            options={{ preset: "islands#darkGreenAutoIcon" }}
-          /> */}
+        <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition}>
+          {crews !== null &&
+            crews.map((el: any) => (
+              <Placemark
+                key={el.crew_id}
+                geometry={[el.lat, el.lon]}
+                options={{ preset: "islands#darkGreenAutoIcon" }}
+              />
+            ))}
           {address === "" ? unavailableAddressMark : availableAddressMark}
         </Map>
       </YMaps>
@@ -99,5 +109,3 @@ const TaxiMap: React.FC = () => {
 };
 
 export default TaxiMap;
-
-// TODO: массив координатами машин, пришедший с сервера отрисовтаь через  .map <Placemark geometry={e.location} options={ { preset: 'islands#darkGreenAutoIcon' } } />
