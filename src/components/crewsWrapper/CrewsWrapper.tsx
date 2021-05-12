@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 type CrewsListProps = {
   crews: any;
 };
@@ -9,7 +7,7 @@ const CrewsWrapper: React.FC<CrewsListProps> = ({ crews }) => {
   return (
     <div className="crews-wrapper">
       {crews === null
-        ? <p>Сейчас покажем машины поблизости...</p>
+        ? <p>Здесь будет список машин!</p>
         : crews.map((el: any) => (
             <div key={el.crew_id}>
               <img src="" alt="" />
