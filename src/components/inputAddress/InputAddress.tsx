@@ -10,15 +10,24 @@ type InputAddressProps = {
 };
 
 const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords}) => {
+  const [isValidInputValue, setIsValidInputValue] = useState(true)
+
   const debouncedSearchTerm = useDebounce(address, 1000);
 
   const showInvalidInput = () => {
-    console.log("не валидно")
+    setIsValidInputValue(false)
   }
+
+  useEffect(() => {
+    if (addressCoords !== [0, 0]) {
+      setIsValidInputValue(true)
+    }
+  }, [addressCoords])
 
   useEffect(() => {
     if (debouncedSearchTerm) {
 
+      setIsValidInputValue(true)
       const testResult = checkInputValue(address);
       let ckheckedValue: string = "";
 
@@ -92,6 +101,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
         onChange={(e) => setAddress(e.target.value)}
         value={address}
       />
+      {!isValidInputValue && <span>Адресс не найден</span>}
     </div>
   );
 };
