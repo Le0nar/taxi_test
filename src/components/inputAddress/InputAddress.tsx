@@ -38,10 +38,11 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
         return
       } 
       ckheckedValue = testResult[0];
-      setAddressCoords([0,0])
-      setAddressCoordsFromName(ckheckedValue)
-    } else {
-      console.log("else")
+      if (address !== inputValue) {
+        setAddressCoords([0,0])
+        setAddressCoordsFromName(ckheckedValue)
+      }
+
     }
   }, [debouncedSearchTerm]);
 
@@ -54,6 +55,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
     const verifedValue = address.match(regexp);
     return verifedValue;
   };
+
 
 
   const setAddressCoordsFromName = (adress: string): void => {
@@ -78,7 +80,10 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
 
       if ((lat === 56.852676) && (lon === 53.206891)) {
         showInvalidInput()
+      } else if ((lat === 56.852676) && (lon === 53.2069)) {
+        showInvalidInput()
       } else {
+
         setAddress(inputValue);
         setAddressCoords([lat, lon]);
         setMapCoords([lat, lon])
