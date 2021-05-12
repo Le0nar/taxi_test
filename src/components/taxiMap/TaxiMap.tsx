@@ -1,6 +1,7 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
+import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
 import InputAddress from "../inputAddress/InputAddress";
 
 
@@ -8,7 +9,24 @@ import InputAddress from "../inputAddress/InputAddress";
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
   const [addressCoords, setAddressCoords] = useState([0, 0]);
-  const [mapCoords, setMapCoords] = useState([56.86186,  53.23243])
+  const [mapCoords, setMapCoords] = useState([56.86186,  53.23243]);
+  const [crews, setCrews] = useState<[] | null>(null);
+
+  useEffect(() => {
+    if (address !== "") {
+      getCrews()
+    } else {
+      setCrews(null)
+    }
+  }, [address])
+
+  const getCrews = async () => {
+    // TODO: оформить согласно тз (время и другие данные передать в аргументы)
+    const url = "http://localhost:8000/crews";
+    const result = await axios.get(url)
+    const crewsList = result.data[0].data.crews_info;
+    setCrews(crewsList)
+}
 
   const setClickPosition = (event: YMapsProps) => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
@@ -75,6 +93,7 @@ const TaxiMap: React.FC = () => {
           {address === "" ? unavailableAddressMark : availableAddressMark}
         </Map>
       </YMaps>
+      <CrewsWrapper crews={crews} />
     </>
   );
 };
