@@ -62,7 +62,7 @@ const TaxiMap: React.FC = () => {
       }}
     />
   );
-   
+
   return (
     <>
       <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} addressCoords={addressCoords} setMapCoords={setMapCoords} />

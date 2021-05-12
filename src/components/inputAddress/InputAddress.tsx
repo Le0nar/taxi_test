@@ -12,8 +12,9 @@ type InputAddressProps = {
 
 const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords, setMapCoords}) => {
   const [isValidInputValue, setIsValidInputValue] = useState(true)
+  const [inputValue, setInputValue] = useState("")
 
-  const debouncedSearchTerm = useDebounce(address, 1000);
+  const debouncedSearchTerm = useDebounce(inputValue, 1000);
 
   const showInvalidInput = () => {
     setIsValidInputValue(false)
@@ -29,7 +30,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
     if (debouncedSearchTerm) {
 
       setIsValidInputValue(true)
-      const testResult = checkInputValue(address);
+      const testResult = checkInputValue(inputValue);
       let ckheckedValue: string = "";
 
       if (testResult === null) {
@@ -43,6 +44,10 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
       console.log("else")
     }
   }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    setInputValue(address)
+  }, [address])
 
   const checkInputValue = (address: string) => {
     const regexp = /(\S+\s){1,3}\S+/;
@@ -74,7 +79,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
       if ((lat === 56.852676) && (lon === 53.206891)) {
         showInvalidInput()
       } else {
-        setAddress(address);
+        setAddress(inputValue);
         setAddressCoords([lat, lon]);
         setMapCoords([lat, lon])
       }
@@ -100,8 +105,8 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
       <label>Откуда</label>
       <input
         type="text"
-        onChange={(e) => setAddress(e.target.value)}
-        value={address}
+        onChange={(e) => setInputValue(e.target.value)}
+        value={inputValue}
       />
       {!isValidInputValue && <span>Адресс не найден</span>}
     </div>
