@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import InputAddress from "../inputAddress/InputAddress";
 
-const testMark = [56.86186,  53.23243];
+
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
   const [addressCoords, setAddressCoords] = useState([0, 0]);
+  const [mapCoords, setMapCoords] = useState([56.86186,  53.23243])
 
   const setClickPosition = (event: YMapsProps) => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
@@ -38,11 +39,9 @@ const TaxiMap: React.FC = () => {
 
       if (street === "" || house === "") {
         setAddress("");
-        // TODO: вызвать функцию, которая оставит метку красного цвета с надписью "Адрес не найден"
       } else {
         const targetName: string = `${street}, ${house}`;
         setAddress(targetName);
-        // TODO: ставить метку желтого цвета
         // TODO: отправлять запрос на сервер
       }
     });
@@ -63,12 +62,12 @@ const TaxiMap: React.FC = () => {
       }}
     />
   );
-
+   
   return (
     <>
-      <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} addressCoords={addressCoords} />
+      <InputAddress address={address} setAddress={setAddress} setAddressCoords={setAddressCoords} addressCoords={addressCoords} setMapCoords={setMapCoords} />
       <YMaps>
-        <Map state={{ center: testMark, zoom: 18 }} onClick={setClickPosition}>
+        <Map state={{ center: mapCoords, zoom: 18 }} onClick={setClickPosition}>
           {/* <Placemark
             geometry={testMark}
             options={{ preset: "islands#darkGreenAutoIcon" }}

@@ -7,9 +7,10 @@ type InputAddressProps = {
   setAddress: any;
   addressCoords: any;
   setAddressCoords: any;
+  setMapCoords: any;
 };
 
-const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords}) => {
+const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords, setMapCoords}) => {
   const [isValidInputValue, setIsValidInputValue] = useState(true)
 
   const debouncedSearchTerm = useDebounce(address, 1000);
@@ -75,6 +76,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
       } else {
         setAddress(address);
         setAddressCoords([lat, lon]);
+        setMapCoords([lat, lon])
       }
     });
   };
