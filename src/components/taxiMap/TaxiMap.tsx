@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
+import getCurrentDate from "../../utils/getCurrentDate";
 import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
 import InputAddress from "../inputAddress/InputAddress";
 
@@ -14,14 +15,30 @@ const TaxiMap: React.FC = () => {
 
   useEffect(() => {
     if (address !== "") {
-      getCrews();
+      const currentDate = getCurrentDate();
+      const lat = +addressCoords[1];
+      const lon = +addressCoords[0];
+
+      const searchParameters = {
+        time: currentDate,
+        addresses: [
+          {
+            address,
+            lat,
+            lon,
+          },
+        ],
+      };
+
+      getCrews(searchParameters);
     } else {
       setCrews(null);
     }
   }, [address]);
 
-  const getCrews = async () => {
-    // TODO: оформить согласно тз (время и другие данные передать в аргументы)
+  const getCrews = async ({time, addresses}: any) => {
+    // TODO: создать интерфейс и вынести интерфейс в src/interfaces.ts
+    
     const url = "http://localhost:8000/crews";
     const result = await axios.get(url);
     const crewsList = result.data[0].data.crews_info;
