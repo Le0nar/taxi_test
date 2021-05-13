@@ -8,9 +8,11 @@ type InputAddressProps = {
   addressCoords: any;
   setAddressCoords: any;
   setMapCoords: any;
+  isPromptActive: boolean;
+  setIsPromptActive: any;
 };
 
-const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords, setMapCoords}) => {
+const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords, setMapCoords, isPromptActive, setIsPromptActive}) => {
   const [isValidInputValue, setIsValidInputValue] = useState(true)
   const [inputValue, setInputValue] = useState("")
 
@@ -30,6 +32,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
     if (debouncedSearchTerm) {
 
       setIsValidInputValue(true)
+      setIsPromptActive(false)
       const testResult = checkInputValue(inputValue);
       let ckheckedValue: string = "";
 
@@ -114,6 +117,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
         value={inputValue}
       />
       {!isValidInputValue && <span>Адресс не найден</span>}
+      {isPromptActive && <span>Обязательное поле</span>}
     </div>
   );
 };
