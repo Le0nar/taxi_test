@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { changeSelectedCrewToValue } from "../../redux/selectedCrew/selectedCrewActions";
+import { changeSelectedCrewToEmpty, changeSelectedCrewToValue } from "../../redux/selectedCrew/selectedCrewActions";
 
 type CrewsListProps = {
   crews: any;
@@ -12,6 +12,7 @@ const CrewsWrapper: React.FC<CrewsListProps> = ({ crews }) => {
   useEffect(() => {
     if (crews === null) {
       setSortedCrews(null);
+      dispatch(changeSelectedCrewToEmpty());
     } else {
       const localSortedCrews: any = [...crews].sort(sortCrews);
       dispatch(changeSelectedCrewToValue(localSortedCrews[0]));
