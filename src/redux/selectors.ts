@@ -1,0 +1,1 @@
+export const getSelectedCrewFromState = (state: any) => state.selectedCrew.selectedCrew;
