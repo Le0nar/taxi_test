@@ -4,6 +4,7 @@ import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import getCurrentDate from "../../utils/getCurrentDate";
 import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
 import InputAddress from "../inputAddress/InputAddress";
+import SelectedCrew from "../selectedCrew/SelectedCrew";
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
@@ -107,6 +108,7 @@ const TaxiMap: React.FC = () => {
         addressCoords={addressCoords}
         setMapCoords={setMapCoords}
       />
+      <SelectedCrew />
       <YMaps>
         <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition}>
           {crews !== null &&
