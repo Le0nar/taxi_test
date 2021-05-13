@@ -27,7 +27,7 @@
                   "driver_phone": "8899",
                   "lat": 56.860581,
                   "lon": 53.209223,
-                  "distance": 600
+                  "distance": 200
               },
               {
                   "crew_id": 127,
@@ -39,7 +39,7 @@
                   "driver_phone": "6655",
                   "lat": 56.847635464331866,
                   "lon": 53.20443147675903,
-                  "distance": 600
+                  "distance": 800
               },
               {
                   "crew_id": 129,
