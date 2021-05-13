@@ -4,6 +4,8 @@ import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import getCurrentDate from "../../utils/getCurrentDate";
 import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
 import InputAddress from "../inputAddress/InputAddress";
+import OrderBtn from "../orderBtn/OrderBtn";
+import SelectedCrew from "../selectedCrew/SelectedCrew";
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
@@ -12,6 +14,7 @@ const TaxiMap: React.FC = () => {
     56.84755415049656, 53.20983911284374,
   ]);
   const [crews, setCrews] = useState<[] | null>(null);
+  const [isPromptActive, setIsPromptActive] = useState(false);
 
   useEffect(() => {
     if (address !== "") {
@@ -106,7 +109,10 @@ const TaxiMap: React.FC = () => {
         setAddressCoords={setAddressCoords}
         addressCoords={addressCoords}
         setMapCoords={setMapCoords}
+        isPromptActive={isPromptActive}
+        setIsPromptActive={setIsPromptActive}
       />
+      <SelectedCrew />
       <YMaps>
         <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition}>
           {crews !== null &&
@@ -121,6 +127,7 @@ const TaxiMap: React.FC = () => {
         </Map>
       </YMaps>
       <CrewsWrapper crews={crews} />
+      <OrderBtn address={address} addressCoords={addressCoords} isPromptActive={isPromptActive} setIsPromptActive={setIsPromptActive} />
     </>
   );
 };
