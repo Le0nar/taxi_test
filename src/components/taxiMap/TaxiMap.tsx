@@ -1,4 +1,5 @@
 import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 import React, { useEffect, useState } from "react";
 import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
 import getCurrentDate from "../../utils/getCurrentDate";
@@ -6,6 +7,9 @@ import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
 import InputAddress from "../inputAddress/InputAddress";
 import OrderBtn from "../orderBtn/OrderBtn";
 import SelectedCrew from "../selectedCrew/SelectedCrew";
+import crewsData from "../../mock-data/crews.json";
+import { dataAPI } from "../../mock-data/dataAPI";
+
 
 const TaxiMap: React.FC = () => {
   const [address, setAddress] = useState("");
@@ -39,13 +43,19 @@ const TaxiMap: React.FC = () => {
     }
   }, [address]);
 
-  const getCrews = async ({time, addresses}: any) => {
+  const getCrews =  (parameters: any) => {
     // TODO: создать интерфейс и вынести интерфейс в src/interfaces.ts
-    
-    const url = "http://localhost:8000/crews";
-    const result = await axios.get(url);
-    const crewsList = result.data[0].data.crews_info;
-    setCrews(crewsList);
+    const mock = new MockAdapter(dataAPI);
+
+    mock.onGet("/crews").reply(200, {
+      crews: crewsData
+    });
+     
+    dataAPI.get("/crews").then(function (response) {
+      const crewsList = response.data.crews.crews[0].data.crews_info;
+      setCrews(crewsList);
+    });
+
   };
 
   const setClickPosition = (event: YMapsProps) => {
