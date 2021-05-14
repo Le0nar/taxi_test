@@ -1,53 +1,25 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { YMaps, Map, Placemark, YMapsProps } from "react-yandex-maps";
-import getCurrentDate from "../../utils/getCurrentDate";
-import CrewsWrapper from "../crewsWrapper/CrewsWrapper";
-import InputAddress from "../inputAddress/InputAddress";
-import OrderBtn from "../orderBtn/OrderBtn";
-import SelectedCrew from "../selectedCrew/SelectedCrew";
+import { Map, Placemark, YMaps, YMapsProps } from "react-yandex-maps";
+import { Dispatch, SetStateAction } from "react";
+import { ICrew } from "../../interfaces";
 
-const TaxiMap: React.FC = () => {
-  const [address, setAddress] = useState("");
-  const [addressCoords, setAddressCoords] = useState([0, 0]);
-  const [mapCoords, setMapCoords] = useState([
-    56.84755415049656, 53.20983911284374,
-  ]);
-  const [crews, setCrews] = useState<[] | null>(null);
-  const [isPromptActive, setIsPromptActive] = useState(false);
+type TaxtMapProps = {
+  address: string;
+  setAddress: Dispatch<SetStateAction<string>>;
+  addressCoords: number[];
+  setAddressCoords: Dispatch<SetStateAction<number[]>>;
+  mapCoords: number[];
+  crews: null | ICrew[];
+};
 
-  useEffect(() => {
-    if (address !== "") {
-      const currentDate = getCurrentDate();
-      const lat = +addressCoords[1];
-      const lon = +addressCoords[0];
-
-      const searchParameters = {
-        time: currentDate,
-        addresses: [
-          {
-            address,
-            lat,
-            lon,
-          },
-        ],
-      };
-
-      getCrews(searchParameters);
-    } else {
-      setCrews(null);
-    }
-  }, [address]);
-
-  const getCrews = async ({time, addresses}: any) => {
-    // TODO: создать интерфейс и вынести интерфейс в src/interfaces.ts
-    
-    const url = "http://localhost:8000/crews";
-    const result = await axios.get(url);
-    const crewsList = result.data[0].data.crews_info;
-    setCrews(crewsList);
-  };
-
+const TaxiMap: React.FC<TaxtMapProps> = ({
+  address,
+  setAddress,
+  addressCoords,
+  setAddressCoords,
+  mapCoords,
+  crews,
+}) => {
   const setClickPosition = (event: YMapsProps) => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
     const coordinates = event.get("coords");
@@ -80,7 +52,6 @@ const TaxiMap: React.FC = () => {
       } else {
         const targetName: string = `${street}, ${house}`;
         setAddress(targetName);
-        // TODO: отправлять запрос на сервер
       }
     });
   };
@@ -102,33 +73,19 @@ const TaxiMap: React.FC = () => {
   );
 
   return (
-    <>
-      <InputAddress
-        address={address}
-        setAddress={setAddress}
-        setAddressCoords={setAddressCoords}
-        addressCoords={addressCoords}
-        setMapCoords={setMapCoords}
-        isPromptActive={isPromptActive}
-        setIsPromptActive={setIsPromptActive}
-      />
-      <SelectedCrew />
-      <YMaps>
-        <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition}>
-          {crews !== null &&
-            crews.map((el: any) => (
-              <Placemark
-                key={el.crew_id}
-                geometry={[el.lat, el.lon]}
-                options={{ preset: "islands#darkGreenAutoIcon" }}
-              />
-            ))}
-          {address === "" ? unavailableAddressMark : availableAddressMark}
-        </Map>
-      </YMaps>
-      <CrewsWrapper crews={crews} />
-      <OrderBtn address={address} addressCoords={addressCoords} isPromptActive={isPromptActive} setIsPromptActive={setIsPromptActive} />
-    </>
+    <YMaps>
+      <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition}>
+        {crews !== null &&
+          crews.map((el: ICrew) => (
+            <Placemark
+              key={el.crew_id}
+              geometry={[el.lat, el.lon]}
+              options={{ preset: "islands#darkGreenAutoIcon" }}
+            />
+          ))}
+        {address === "" ? unavailableAddressMark : availableAddressMark}
+      </Map>
+    </YMaps>
   );
 };
 

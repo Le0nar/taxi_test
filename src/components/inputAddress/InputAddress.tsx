@@ -1,65 +1,69 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import useDebounce from "../../hooks/debounce.hook";
 
 type InputAddressProps = {
   address: string;
-  setAddress: any;
-  addressCoords: any;
-  setAddressCoords: any;
-  setMapCoords: any;
+  setAddress: Dispatch<SetStateAction<string>>;
+  addressCoords: number[];
+  setAddressCoords: Dispatch<SetStateAction<number[]>>;
+  setMapCoords: Dispatch<SetStateAction<number[]>>;
   isPromptActive: boolean;
-  setIsPromptActive: any;
+  setIsPromptActive: Dispatch<SetStateAction<boolean>>;
 };
 
-const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addressCoords, setAddressCoords, setMapCoords, isPromptActive, setIsPromptActive}) => {
-  const [isValidInputValue, setIsValidInputValue] = useState(true)
-  const [inputValue, setInputValue] = useState("")
+const InputAddress: React.FC<InputAddressProps> = ({
+  address,
+  setAddress,
+  addressCoords,
+  setAddressCoords,
+  setMapCoords,
+  isPromptActive,
+  setIsPromptActive,
+}) => {
+  const [isValidInputValue, setIsValidInputValue] = useState(true);
+  const [inputValue, setInputValue] = useState("");
 
   const debouncedSearchTerm = useDebounce(inputValue, 1000);
 
   const showInvalidInput = () => {
-    setIsValidInputValue(false)
-  }
+    setIsValidInputValue(false);
+  };
 
   useEffect(() => {
     if (addressCoords !== [0, 0]) {
-      setIsValidInputValue(true)
+      setIsValidInputValue(true);
     }
-  }, [addressCoords])
+  }, [addressCoords]);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-
-      setIsValidInputValue(true)
-      setIsPromptActive(false)
+      setIsValidInputValue(true);
+      setIsPromptActive(false);
       const testResult = checkInputValue(inputValue);
       let ckheckedValue: string = "";
 
       if (testResult === null) {
-        showInvalidInput()
-        return
-      } 
+        showInvalidInput();
+        return;
+      }
       ckheckedValue = testResult[0];
       if (address !== inputValue) {
-        setAddressCoords([0,0])
-        setAddressCoordsFromName(ckheckedValue)
+        setAddressCoords([0, 0]);
+        setAddressCoordsFromName(ckheckedValue);
       }
-
     }
   }, [debouncedSearchTerm]);
 
   useEffect(() => {
-    setInputValue(address)
-  }, [address])
+    setInputValue(address);
+  }, [address]);
 
   const checkInputValue = (address: string) => {
     const regexp = /(\S+\s){1,3}\S+/;
     const verifedValue = address.match(regexp);
     return verifedValue;
   };
-
-
 
   const setAddressCoordsFromName = (adress: string): void => {
     const apiKey: string = "177e6c11-088c-4732-b080-1c22c5eb357c";
@@ -70,7 +74,7 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
 
     axios.get(url).then((resp) => {
       if (!resp.data.response.GeoObjectCollection.featureMember[0]) {
-        return
+        return;
       }
       const coordinates: string =
         resp.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point
@@ -81,15 +85,14 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
       const lat = +correctCoordinates[1];
       const lon = +correctCoordinates[0];
 
-      if ((lat === 56.852676) && (lon === 53.206891)) {
-        showInvalidInput()
-      } else if ((lat === 56.852676) && (lon === 53.2069)) {
-        showInvalidInput()
+      if (lat === 56.852676 && lon === 53.206891) {
+        showInvalidInput();
+      } else if (lat === 56.852676 && lon === 53.2069) {
+        showInvalidInput();
       } else {
-
         setAddress(inputValue);
         setAddressCoords([lat, lon]);
-        setMapCoords([lat, lon])
+        setMapCoords([lat, lon]);
       }
     });
   };
@@ -105,7 +108,6 @@ const InputAddress: React.FC<InputAddressProps> = ({ address, setAddress, addres
 
     return { street, house };
   };
-
 
   return (
     <div className="input-adress">
