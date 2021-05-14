@@ -1,14 +1,15 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import getCurrentDate from "../../utils/getCurrentDate";
+import { Dispatch, SetStateAction } from "react";
 
 type OrderBtnProps = {
   address: string;
-  addressCoords: any;
+  addressCoords: number[];
   isPromptActive: boolean;
-  setIsPromptActive: any;
+  setIsPromptActive: Dispatch<SetStateAction<boolean>>;
 };
-//TODO: import interface for orderParameters
+
 const OrderBtn: React.FC<OrderBtnProps> = ({
   address,
   addressCoords,
@@ -38,7 +39,10 @@ const OrderBtn: React.FC<OrderBtnProps> = ({
     sendOrder(orderParameters);
   };
 
-  const sendOrder = (orderParameters: any) => {
+  const sendOrder = (orderParameters: {
+    time: string;
+    addresses: { address: string; lat: number; lon: number }[];
+  }) => {
     const mock = new MockAdapter(axios);
 
     mock.onPost("/endpoint").replyOnce(200);

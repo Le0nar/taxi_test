@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { changeSelectedCrewToEmpty, changeSelectedCrewToValue } from "../../redux/selectedCrew/selectedCrewActions";
+import { ICrew } from "../../interfaces";
+import {
+  changeSelectedCrewToEmpty,
+  changeSelectedCrewToValue,
+} from "../../redux/selectedCrew/selectedCrewActions";
 
 type CrewsListProps = {
-  crews: any;
+  crews: null | ICrew[];
 };
 
 const CrewsWrapper: React.FC<CrewsListProps> = ({ crews }) => {
-  const [sortedCrews, setSortedCrews] = useState<[] | null>(null);
+  const [sortedCrews, setSortedCrews] = useState<ICrew[] | null>(null);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (crews === null) {
       setSortedCrews(null);
       dispatch(changeSelectedCrewToEmpty());
     } else {
-      const localSortedCrews: any = [...crews].sort(sortCrews);
+      const localSortedCrews = [...crews].sort(sortCrews);
       dispatch(changeSelectedCrewToValue(localSortedCrews[0]));
       setSortedCrews(localSortedCrews);
     }
   }, [crews]);
 
-  const sortCrews = (a: any, b: any) => {
-    // TODO: add interface for arguments
+  const sortCrews = (a: ICrew, b: ICrew) => {
     return a.distance - b.distance;
   };
 
@@ -30,7 +34,7 @@ const CrewsWrapper: React.FC<CrewsListProps> = ({ crews }) => {
       {sortedCrews === null ? (
         <p>Здесь будет список машин!</p>
       ) : (
-        sortedCrews.map((el: any) => (
+        sortedCrews.map((el: ICrew) => (
           <div id={el.crew_id} key={el.crew_id}>
             <img src="" alt="" />
             <div>

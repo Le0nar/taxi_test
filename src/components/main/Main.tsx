@@ -9,7 +9,6 @@ import crewsData from "../../mock-data/crews.json";
 import { dataAPI } from "../../mock-data/dataAPI";
 import TaxiMap from "../taxiMap/TaxiMap";
 
-
 const Main: React.FC = () => {
   const [address, setAddress] = useState("");
   const [addressCoords, setAddressCoords] = useState([0, 0]);
@@ -42,19 +41,20 @@ const Main: React.FC = () => {
     }
   }, [address]);
 
-  const getCrews =  (parameters: any) => {
-    // TODO: создать интерфейс и вынести интерфейс в src/interfaces.ts
+  const getCrews = (parameters: {
+    time: string;
+    addresses: { address: string; lat: number; lon: number }[];
+  }) => {
     const mock = new MockAdapter(dataAPI);
 
     mock.onGet("/crews").reply(200, {
-      crews: crewsData
+      crews: crewsData,
     });
-     
+
     dataAPI.get("/crews").then(function (response) {
       const crewsList = response.data.crews.crews[0].data.crews_info;
       setCrews(crewsList);
     });
-
   };
 
   return (
@@ -70,10 +70,22 @@ const Main: React.FC = () => {
       />
       <SelectedCrew />
       <div className="">
-        <TaxiMap address={address} setAddress={setAddress} addressCoords={addressCoords} setAddressCoords={setAddressCoords} mapCoords={mapCoords} crews={crews} />
+        <TaxiMap
+          address={address}
+          setAddress={setAddress}
+          addressCoords={addressCoords}
+          setAddressCoords={setAddressCoords}
+          mapCoords={mapCoords}
+          crews={crews}
+        />
         <CrewsWrapper crews={crews} />
       </div>
-      <OrderBtn address={address} addressCoords={addressCoords} isPromptActive={isPromptActive} setIsPromptActive={setIsPromptActive} />
+      <OrderBtn
+        address={address}
+        addressCoords={addressCoords}
+        isPromptActive={isPromptActive}
+        setIsPromptActive={setIsPromptActive}
+      />
     </>
   );
 };
