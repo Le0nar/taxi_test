@@ -2,6 +2,8 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import getCurrentDate from "../../utils/getCurrentDate";
 import { Dispatch, SetStateAction } from "react";
+import { getSelectedCrewFromState } from "../../redux/selectors";
+import { useSelector } from "react-redux";
 
 type OrderBtnProps = {
   address: string;
@@ -16,6 +18,8 @@ const OrderBtn: React.FC<OrderBtnProps> = ({
   isPromptActive,
   setIsPromptActive,
 }) => {
+  const selectedCrew = useSelector(getSelectedCrewFromState);
+
   const checkParameters = () => {
     if (address === "") {
       setIsPromptActive(true);
@@ -27,6 +31,7 @@ const OrderBtn: React.FC<OrderBtnProps> = ({
     const lon: number = addressCoords[0];
 
     const orderParameters = {
+      crewID: selectedCrew.crew_id,
       time: currentDate,
       addresses: [
         {
@@ -40,6 +45,7 @@ const OrderBtn: React.FC<OrderBtnProps> = ({
   };
 
   const sendOrder = (orderParameters: {
+    crewID: number;
     time: string;
     addresses: { address: string; lat: number; lon: number }[];
   }) => {
