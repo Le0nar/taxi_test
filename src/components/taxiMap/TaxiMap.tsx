@@ -2,6 +2,7 @@ import axios from "axios";
 import { Map, Placemark, YMaps, YMapsProps } from "react-yandex-maps";
 import { Dispatch, SetStateAction } from "react";
 import { ICrew } from "../../interfaces";
+import "./taxiMap.scss";
 
 type TaxtMapProps = {
   address: string;
@@ -73,19 +74,21 @@ const TaxiMap: React.FC<TaxtMapProps> = ({
   );
 
   return (
-    <YMaps>
-      <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition}>
-        {crews !== null &&
-          crews.map((el: ICrew) => (
-            <Placemark
-              key={el.crew_id}
-              geometry={[el.lat, el.lon]}
-              options={{ preset: "islands#darkGreenAutoIcon" }}
-            />
-          ))}
-        {address === "" ? unavailableAddressMark : availableAddressMark}
-      </Map>
-    </YMaps>
+    <div className="taxi-map">
+      <YMaps>
+        <Map state={{ center: mapCoords, zoom: 17 }} onClick={setClickPosition} width="600px" height="350px">
+          {crews !== null &&
+            crews.map((el: ICrew) => (
+              <Placemark
+                key={el.crew_id}
+                geometry={[el.lat, el.lon]}
+                options={{ preset: "islands#darkGreenAutoIcon" }}
+              />
+            ))}
+          {address === "" ? unavailableAddressMark : availableAddressMark}
+        </Map>
+      </YMaps>
+    </div>
   );
 };
 

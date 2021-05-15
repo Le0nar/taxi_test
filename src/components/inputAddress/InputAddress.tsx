@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import useDebounce from "../../hooks/debounce.hook";
+import "./inputAddress.scss"
 
 type InputAddressProps = {
   address: string;
@@ -110,16 +111,18 @@ const InputAddress: React.FC<InputAddressProps> = ({
   };
 
   return (
-    <div className="input-adress">
-      {/* TODO: при клике на лейбл, сделать активным инпут */}
-      <label>Откуда</label>
+    <div className="input-address">
+      <label className="input-address__label" htmlFor="address">Откуда:</label>
       <input
         type="text"
         onChange={(e) => setInputValue(e.target.value)}
         value={inputValue}
+        id="address"
+        className="input-address__input"
+        placeholder="Введите адресс"
       />
-      {!isValidInputValue && <span>Адресс не найден</span>}
-      {isPromptActive && <span>Обязательное поле</span>}
+      {!isValidInputValue && <span className="input-address__prompt" >Адресс не найден</span>}
+      {isPromptActive && <span className="input-address__prompt" >Обязательное поле</span>}
     </div>
   );
 };

@@ -6,8 +6,10 @@ import store from "./redux/store";
 function App() {
   return (
     <Provider store={store}>
-      <Header />
-      <Main />
+      <div className="container">
+        <Header />
+        <Main />
+      </div>
     </Provider>
   );
 }

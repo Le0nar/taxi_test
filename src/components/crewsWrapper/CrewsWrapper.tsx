@@ -5,6 +5,8 @@ import {
   changeSelectedCrewToEmpty,
   changeSelectedCrewToValue,
 } from "../../redux/selectedCrew/selectedCrewActions";
+import "./crewsWrapper.scss";
+import taxi from "../../images/taxi.png";
 
 type CrewsListProps = {
   crews: null | ICrew[];
@@ -35,15 +37,17 @@ const CrewsWrapper: React.FC<CrewsListProps> = ({ crews }) => {
         <p>Здесь будет список машин!</p>
       ) : (
         sortedCrews.map((el: ICrew) => (
-          <div id={el.crew_id} key={el.crew_id}>
-            <img src="" alt="" />
-            <div>
-              <span>
-                {el.car_mark} {el.car_model}
+          <div id={el.crew_id} key={el.crew_id} className="crews-wrapper__crew">
+            <img src={taxi} alt="taxi" className="crews-wrapper__crew__img" />
+            <div className="crews-wrapper__crew__info">
+              <span className="crews-wrapper__crew__info__model">
+                {el.car_mark + " " + el.car_model}
               </span>
               <span>{el.car_color}</span>
             </div>
-            <span>{el.distance} м</span>
+            <span className="crews-wrapper__crew__distance">
+              {el.distance} м
+            </span>
           </div>
         ))
       )}

@@ -8,6 +8,7 @@ import SelectedCrew from "../selectedCrew/SelectedCrew";
 import crewsData from "../../mock-data/crews.json";
 import { dataAPI } from "../../mock-data/dataAPI";
 import TaxiMap from "../taxiMap/TaxiMap";
+import "./main.scss";
 
 const Main: React.FC = () => {
   const [address, setAddress] = useState("");
@@ -76,7 +77,7 @@ const Main: React.FC = () => {
         setIsPromptActive={setIsPromptActive}
       />
       <SelectedCrew />
-      <div className="">
+      <div className="main-wrapper">
         <TaxiMap
           address={address}
           setAddress={setAddress}
