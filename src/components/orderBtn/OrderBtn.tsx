@@ -4,6 +4,7 @@ import getCurrentDate from "../../utils/getCurrentDate";
 import { Dispatch, SetStateAction } from "react";
 import { getSelectedCrewFromState } from "../../redux/selectors";
 import { useSelector } from "react-redux";
+import "./orderBtn.scss";
 
 type OrderBtnProps = {
   address: string;
@@ -74,7 +75,7 @@ const OrderBtn: React.FC<OrderBtnProps> = ({
   };
 
   return (
-    <button disabled={isPromptActive} onClick={checkParameters}>
+    <button disabled={isPromptActive} onClick={checkParameters} className="order-btn">
       Заказать
     </button>
   );
