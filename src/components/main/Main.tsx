@@ -47,14 +47,21 @@ const Main: React.FC = () => {
   }) => {
     const mock = new MockAdapter(dataAPI);
 
-    mock.onGet("/crews").reply(200, {
-      crews: crewsData,
-    });
+    mock.onPost("/crews").replyOnce(200);
 
-    dataAPI.get("/crews").then(function (response) {
-      const crewsList = response.data.crews.crews[0].data.crews_info;
-      setCrews(crewsList);
-    });
+    dataAPI
+      .post("/crews", parameters)
+      .then(() => {
+        mock.onGet("/crews").reply(200, {
+          crews: crewsData,
+        });
+
+        dataAPI.get("/crews").then(function (response) {
+          const crewsList = response.data.crews.crews[0].data.crews_info;
+          setCrews(crewsList);
+        });
+      })
+      .catch(() => console.log("error"));
   };
 
   return (
